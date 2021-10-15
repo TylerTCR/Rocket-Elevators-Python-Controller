@@ -50,6 +50,7 @@ class Elevator:
     def requestFloor(self, requestedFloor):
         self.floorRequestList.append(requestedFloor)
         self.move()
+        self.door.status = "opened"
 
     def move(self):
         element = 0
@@ -68,8 +69,6 @@ class Elevator:
                         self.currentFloor += 1
                     
                     self.status = "stopped"
-                    self.door.status = "opened"
-                    self.door.status = "closed"
                 # If the elevator's current floor is higher than the requested floor
                 elif self.currentFloor > element:
                     self.direction = "down"
@@ -83,8 +82,6 @@ class Elevator:
                         self.currentFloor -= 1
                     
                     self.status = "stopped"
-                    self.door.status = "opened"
-                    self.door.status = "closed"
                 # End if
                 # Remove the floor since it's been reached
                 self.floorRequestList.pop(0)
