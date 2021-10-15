@@ -3,7 +3,7 @@ class CallButton:
         self.ID = _id
         self.status = "off"
         self.floor = _floor
-        self.direcion = _direction
+        self.direction = _direction
 # End Call Button Class
 
 class FloorRequestButton:
@@ -14,19 +14,19 @@ class FloorRequestButton:
 # End Floor Request Button Class
 
 class Door:
-    def __init__(self, _id, _status):
+    def __init__(self, _id):
         self.ID = _id
-        self.status = _status
+        self.status = "closed"
 # End Door Class
 
 class Elevator:
     def __init__(self, _id, _amountOfFloors):
         self.ID = _id
         self.amountOfFloors = _amountOfFloors
-        self.status = "online"
+        self.status = "idle"
         self.currentFloor = 1
-        self.direction = None
-        self.door = Door(_id, "closed")
+        self.direction = ""
+        self.door = Door(_id)
         self.floorRequestList = []
         self.floorRequestButtonList = []
 
@@ -55,7 +55,7 @@ class Elevator:
         element = 0
 
         while len(self.floorRequestList) != 0:
-            for element in range(len(self.floorRequestList)):
+            for element in self.floorRequestList:
                 if self.currentFloor < element:
                     self.direction = "up"
                     self.sortFloorList()
@@ -144,6 +144,9 @@ class Column:
     def requestElevator(self, requestedFloor, direction):
         chosenElevator = self.findBestElevator(requestedFloor, direction)
         chosenElevator.floorRequestList.append(requestedFloor)
+        chosenElevator.move()
+        chosenElevator.door.status = "opened"
+        return chosenElevator
 
     # Find the best elevator to use
     def findBestElevator(self, requestedFloor, requestedDirection):
@@ -156,25 +159,27 @@ class Column:
         for elev in self.elevatorList:
             # Elevator is currently at the floor requested, it's stopped, and going in the direction requested
             if requestedFloor == elev.currentFloor and elev.status == "stopped" and requestedDirection == elev.direction:
-                bestElevatorInformation = self.checkIfElevatorIsBetter(1, elev, bestScore, referenceGap, requestedFloor)
+                bestElevatorInformation = self.checkIfElevatorIsBetter(1, elev, bestScore, referenceGap, bestElevator, requestedFloor)
             # Elevator is currently higher than the floor requested, it's going down, the user wants to go down
             elif elev.currentFloor > requestedFloor and elev.direction == "down" and requestedDirection == elev.direction:
-                bestElevatorInformation = self.checkIfElevatorIsBetter(2, elev, bestScore, referenceGap, requestedFloor)
+                bestElevatorInformation = self.checkIfElevatorIsBetter(2, elev, bestScore, referenceGap, bestElevator, requestedFloor)
             # Elevator is currently lower than the floor requested, it's going up, the user wants to go up
             elif elev.currentFloor < requestedFloor and elev.direction == "up" and requestedDirection == elev.direction:
-                bestElevatorInformation = self.checkIfElevatorIsBetter(2, elev, bestScore, referenceGap, requestedFloor)
+                bestElevatorInformation = self.checkIfElevatorIsBetter(2, elev, bestScore, referenceGap, bestElevator, requestedFloor)
             # Elevator is idle
             elif elev.status == "idle":
-                bestElevatorInformation = self.checkIfElevatorIsBetter(3, elev, bestScore, referenceGap, requestedFloor)
+                bestElevatorInformation = self.checkIfElevatorIsBetter(3, elev, bestScore, referenceGap, bestElevator, requestedFloor)
             # No other elevator currently available
             else:
-                bestElevatorInformation = self.checkIfElevatorIsBetter(4, elev, bestScore, referenceGap, requestedFloor)
+                bestElevatorInformation = self.checkIfElevatorIsBetter(4, elev, bestScore, referenceGap, bestElevator, requestedFloor)
             
-            bestElevator = bestElevatorInformation.bestElevator
-            bestScore = bestElevatorInformation.bestScore
-            referenceGap = bestElevatorInformation.referenceGap
+            bestElevator = bestElevatorInformation["bestElevator"]
+            bestScore = bestElevatorInformation["bestScore"]
+            referenceGap = bestElevatorInformation["referenceGap"]
         # End loop
         
+        print("Best Elevtor")
+        print(bestElevator)
         return bestElevator
     
     def checkIfElevatorIsBetter(self, scoreToCheck, newElevator, bestScore, referenceGap, bestElevator, floor):
@@ -189,8 +194,8 @@ class Column:
                 referenceGap = gap
         
         return {
-            bestElevator: bestElevator,
-            bestScore: bestScore,
-            referenceGap: referenceGap
+            "bestElevator": bestElevator,
+            "bestScore": bestScore,
+            "referenceGap": referenceGap
         }
 # End Column Class

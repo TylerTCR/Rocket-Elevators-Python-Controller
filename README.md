@@ -1,34 +1,14 @@
 # Rocket-Elevators-Python-Controller
-This is the template to use for the python residential controller. You will find the classes that should be used along with some methods described in the requirements. The necessary file to run some tests is also included. 
+This is Tyler's Rocket Elevators' Residential Controller coded in Python.
 
-### Installation
-
-First, depending on your python version, make sure to install the Package Installer for Python (PIP) if needed:
-
-https://pip.pypa.io/en/stable/installing/
-
-Next, install Pytest:
-
-https://docs.pytest.org/en/6.2.x/getting-started.html
+A brief run-down on how the controller works; First, the user calls the elevator and will pick the best elevator to send. Once picked, it will come to the user and allow them to get in and choose the floor they want to go to. When a floor is chosen, it will add the floor they picked to a floor request list for that specific elevator. Finally, the elevator will take them to that floor.
 
 ### Running the tests
 
-To launch the tests:
+To test this controller with scenarios, simply run the following command:
 
-`pytest`
+`python -m pytest`
 
-With a fully completed project, you should get an output like:
+To get more details about the test, simply add `-v` at the end like so:
 
-![Screenshot from 2021-06-15 13-13-13](https://user-images.githubusercontent.com/28630658/122095645-a41fa000-cddb-11eb-9322-81a766cce4bb.png)
-
-You can also get more details about each test by adding the `-v` flag: 
-
-`pytest -v` 
-
-which should give something like: 
-
-![Screenshot from 2021-06-15 13-13-33](https://user-images.githubusercontent.com/28630658/122095759-c74a4f80-cddb-11eb-999d-dfe35dbe7d18.png)
-
-The test file can be left in your final project but no scenarios should be present in your code. The grader will run tests similar to the ones provided.
-
-Of course, make sure to edit this Readme file to describe your own project!
+`python -m pytest -v`
